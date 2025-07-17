@@ -21,17 +21,9 @@ Tested with Ergo IRC Server
 
 The easiest way to get started is to download a pre-built binary from the [releases page](https://github.com/Sudo-Ivan/trebek-bot/releases). Choose the appropriate binary for your operating system and architecture.
 
-### 2. Using `go install`
-
-If you have Go installed (version 1.21 or higher recommended), you can install the bot directly:
-
-```bash
-go install github.com/Sudo-Ivan/trebek-bot/cmd/trebek@latest
-```
-
 This will install the `trebek` executable in your `$GOPATH/bin` (or `$GOBIN`) directory.
 
-### 3. Manual Build and Run
+### 2. Manual Build and Run
 
 If you prefer to build from source or want to make modifications:
 
@@ -49,7 +41,7 @@ If you prefer to build from source or want to make modifications:
     ./trebek
     ```
 
-### 4. Docker/Podman
+### 3. Docker/Podman
 
 Amd64 and Arm64 supported.
 
