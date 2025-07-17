@@ -139,7 +139,6 @@ IRC_CHANNEL=#
 					return
 				}
 				triviaGame.SetPlaying(false)
-				close(gameStopChan) // Signal game loop to stop
 				ircClient.Privmsg(target, "Stopping continuous trivia.")
 			case strings.HasPrefix(msgLower, "!question"):
 				if triviaGame.GetPlaying() {
@@ -304,18 +303,18 @@ func gameLoop(ircClient *irc.Client, triviaGame *game.Game, stopChan <-chan stru
 	// Stop the initial timer immediately, as we'll manage it manually
 	nextQuestionTimer.Stop()
 
-	for {
+	for triviaGame.GetPlaying() { // Loop as long as the game is set to playing
 		select {
 		case <-nextQuestionTimer.C:
 			// Time for the next question
-			if triviaGame.GetPlaying() {
+			if triviaGame.GetPlaying() { // Double check playing state
 				askQuestion(ircClient, triviaGame)
 				// Reset timer for the next question after this one is asked
 				nextQuestionTimer.Reset(45 * time.Second) // Default interval for next question
 			}
 		case answered := <-triviaGame.AnswerGiven:
 			// An answer was given or question timed out/skipped
-			if triviaGame.GetPlaying() {
+			if triviaGame.GetPlaying() { // Double check playing state
 				if answered {
 					// If answered correctly, ask next question after a short delay
 					nextQuestionTimer.Reset(nextQuestionDelay)
@@ -325,8 +324,11 @@ func gameLoop(ircClient *irc.Client, triviaGame *game.Game, stopChan <-chan stru
 				}
 			}
 		case <-stopChan:
-			slog.Info("Game loop stopped.")
+			slog.Info("Game loop received explicit stop signal.")
 			return
+		default:
+			time.Sleep(100 * time.Millisecond)
 		}
 	}
+	slog.Info("Game loop stopped because triviaGame.GetPlaying() is false.")
 }
