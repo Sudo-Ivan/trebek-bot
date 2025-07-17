@@ -1,0 +1,6 @@
+BOT_NAME=TrebekBot
+IRC_SERVER=localhost:6667
+IRC_SERVER_TLS=localhost:6697
+IRC_CHANNEL=#
+# LOG_FILE_PATH=
+# LOG_LEVEL=info # debug, info, warn, error
