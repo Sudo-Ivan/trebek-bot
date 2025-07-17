@@ -23,11 +23,19 @@ func main() {
 
 	// Define command-line flags
 	configPath := flag.String("c", "config.txt", "Path to the configuration file")
+	botNameFlag := flag.String("botname", "", "Bot's name (overrides config file and env)")
+	ircServerFlag := flag.String("ircserver", "", "IRC server address (overrides config file and env)")
+	ircServerTLSFlag := flag.String("ircservertls", "", "IRC TLS server address (overrides config file and env)")
+	ircChannelFlag := flag.String("ircchannel", "", "IRC channel to join (overrides config file and env)")
+	logFilePathFlag := flag.String("logfile", "", "Path to log file (overrides config file and env)")
+	logLevelFlag := flag.String("loglevel", "", "Log level (debug, info, warn, error) (overrides config file and env)")
+
 	flag.Parse()
 
 	configFilePath := *configPath
 
 	// Ensure config.txt exists, create with defaults if not
+	// This part remains, but the values will be overridden by flags/env vars later.
 	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
 		slog.Info("config.txt not found, creating with default values.")
 		defaultConfigContent := `BOT_NAME=TrebekBot
@@ -45,7 +53,15 @@ IRC_CHANNEL=#
 	}
 
 	// Load configuration
-	cfg, err := config.LoadConfig(configFilePath)
+	cfg, err := config.LoadConfig(
+		configFilePath,
+		*botNameFlag,
+		*ircServerFlag,
+		*ircServerTLSFlag,
+		*ircChannelFlag,
+		*logFilePathFlag,
+		*logLevelFlag,
+	)
 	if err != nil {
 		slog.Default().Error("Failed to load configuration", "error", err)
 		os.Exit(1)
