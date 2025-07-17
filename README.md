@@ -1,6 +1,12 @@
 # Trebek Trivia Bot (Go)
 
-A simple and modern Trebek trivia bot built in Go for IRC servers. Inspired by original ruby bot.
+[![Go Tests](https://github.com/Sudo-Ivan/trebek-bot/actions/workflows/test.yml/badge.svg)](https://github.com/Sudo-Ivan/trebek-bot/actions/workflows/test.yml)
+[![Go Build Multi-Platform](https://github.com/Sudo-Ivan/trebek-bot/actions/workflows/build.yml/badge.svg)](https://github.com/Sudo-Ivan/trebek-bot/actions/workflows/build.yml)
+[![Run Gosec](https://github.com/Sudo-Ivan/trebek-bot/actions/workflows/gosec.yml/badge.svg)](https://github.com/Sudo-Ivan/trebek-bot/actions/workflows/gosec.yml)
+[![Build and Publish Docker Image](https://github.com/Sudo-Ivan/trebek-bot/actions/workflows/docker.yml/badge.svg)](https://github.com/Sudo-Ivan/trebek-bot/actions/workflows/docker.yml)
+
+
+A simple and modern Trebek trivia bot built in Go for IRC servers. Inspired by [original ruby bot](https://github.com/epitron/trebek).
 
 - No 3rd-party Go dependencies
 - Low cpu/mem footprint
@@ -44,6 +50,18 @@ If you prefer to build from source or want to make modifications:
     ```
 
 ### 4. Docker/Podman
+
+Amd64 and Arm64 supported.
+
+```bash
+docker pull ghcr.io/sudo-ivan/trebek-bot:latest
+
+# To run the Trebek bot with network host mode (required to connect to IRC servers running on localhost):
+docker run --rm -d --network host -v ./config.txt:/app/config.txt --name trebek-bot ghcr.io/sudo-ivan/trebek-bot:latest
+
+# To run the Trebek bot without network host mode (default Docker networking):
+docker run --rm -d -v ./config.txt:/app/config.txt --name trebek-bot ghcr.io/sudo-ivan/trebek-bot:latest
+```
 
 **Build and Run Docker Image Manually:**
 
