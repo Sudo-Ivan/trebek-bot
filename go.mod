@@ -1,3 +1,3 @@
-module github.com/Sudo-Ivan/trebek-bot
+module trebek
 
 go 1.24
