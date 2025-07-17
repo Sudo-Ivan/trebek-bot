@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -15,6 +16,9 @@ import (
 )
 
 var scoreboardFile = "scoreboard.json"
+
+// regNonAlphaNum is a regex to match any character that is not a letter or a number.
+var regNonAlphaNum = regexp.MustCompile(`[^a-zA-Z0-9]+`)
 
 // Scoreboard stores player scores.
 type Scoreboard struct {
@@ -198,8 +202,22 @@ func (g *Game) CheckAnswer(answer string) bool {
 		return false
 	}
 
-	// Simple case-insensitive comparison for now
-	return strings.EqualFold(strings.TrimSpace(answer), strings.TrimSpace(g.CurrentQuestion.Answer))
+	// Normalize both the provided answer and the correct answer for comparison.
+	// This includes converting to lowercase, trimming spaces, and removing non-alphanumeric characters.
+	normalizedAttempt := normalizeAnswer(answer)
+	normalizedCorrect := normalizeAnswer(g.CurrentQuestion.Answer)
+
+	// Perform a simple equality check after normalization.
+	return normalizedAttempt == normalizedCorrect
+}
+
+// normalizeAnswer converts the input string to lowercase, trims spaces, and removes
+// all non-alphanumeric characters. This helps in robust answer matching.
+func normalizeAnswer(s string) string {
+	s = strings.ToLower(s)
+	s = strings.TrimSpace(s)
+	s = regNonAlphaNum.ReplaceAllString(s, "")
+	return s
 }
 
 // GetCurrentQuestion returns the current question.

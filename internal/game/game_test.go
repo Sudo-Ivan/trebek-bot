@@ -251,6 +251,32 @@ func TestCheckAnswer(t *testing.T) {
 		}
 	}
 
+	// Test cases for new normalization logic
+	game.CurrentQuestion.Answer = "Jordan River"
+	normalizationTests := []struct {
+		answer   string
+		expected bool
+	}{
+		{"Jordan River", true},
+		{"jordan river", true},
+		{"JORDAN RIVER", true},
+		{"JordanRiver", true},
+		{"Jordan River.", true},
+		{"Jordan-River", true},
+		{"Jordan_River", true},
+		{"Jordan  River", true},
+		{"The Jordan River", false}, // Should be false as "The" is not in the answer
+		{"River Jordan", false},     // Order matters with simple equality
+		{"Jordan", false},           // Partial match
+		{"river", false},            // Partial match
+	}
+
+	for _, test := range normalizationTests {
+		if game.CheckAnswer(test.answer) != test.expected {
+			t.Errorf("CheckAnswer (normalization) for answer %q, expected %t, got %t", test.answer, test.expected, !test.expected)
+		}
+	}
+
 	// Test with no current question
 	game.ClearCurrentQuestion()
 	if game.CheckAnswer("anything") != false {
